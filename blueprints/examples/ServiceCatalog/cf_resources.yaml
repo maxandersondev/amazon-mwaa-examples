@@ -1,0 +1,231 @@
+AWSTemplateFormatVersion: "2010-09-09"
+##################################
+# Notes
+##################################
+# If you run this tempalte from the cli, you'll need to add the CAPABILITY_NAMED_IAM in the --capabilities
+
+##################################
+# Parameters
+##################################
+Parameters:
+  MWAACloudFormation:
+    Type: String
+    Description: URL Where the MWAA Service Catalog CloudFormation is stored.  You will need to provide a http url to where the ServiceCatalog yaml (resources.yaml) is stored.
+    
+  MWAAGroupName:
+    Type: String
+    Description: The group name you'd like to associate with the portfolio.  The group will be prefixed by the region to reduce conflicts.
+    Default: MWAAServiceCatalogGroup
+  
+  ProductDistributor:
+    Type: String
+    Description: MWAA Product Distributor string.  
+  
+  ProductSupportEmail:
+    Type: String
+    Description: MWAA Product support email string.
+  
+  ProductOwner:
+    Type: String
+    Description: MWAA Product owner string.
+  
+  PortfolioDescription:
+    Type: String
+    Description: MWAA Portfolio description string.
+    Default: MWAA private configuration portfolio.
+  
+  PortfolioDisplayName:
+    Type: String
+    Description: MWAA Portfolio description string.
+    Default: MWAA private configuration Service Catalog
+
+  PortfolioProviderName:
+    Type: String
+    Description: MWAA Portfolio provider name string.
+
+  
+
+##################################
+# Resources
+##################################
+Resources:
+##################################
+# MWAA / Service Catalog
+##################################
+  MWAAPortfolio:
+    Type: AWS::ServiceCatalog::Portfolio
+    Properties: 
+      Description: !Ref PortfolioDescription
+      DisplayName: !Ref PortfolioDisplayName 
+      ProviderName: !Ref PortfolioProviderName
+      Tags: 
+        - Key: "MWAA-product"
+          Value: "Private configuration MWAA"
+  
+  MWAAPortfolioLaunchRole:
+    DependsOn: RootRole
+    Type: AWS::ServiceCatalog::LaunchRoleConstraint
+    Properties: 
+      Description: MWAA Launch Role Constraint
+      PortfolioId: !Ref MWAAPortfolio
+      ProductId: !Ref MWAAProduct
+      RoleArn: !GetAtt 'RootRole.Arn'
+
+  MWAAProduct:
+    Type: AWS::ServiceCatalog::CloudFormationProduct
+    Properties: 
+      Description: Service catalog product for private MWAA configuration
+      Distributor: !Ref ProductDistributor
+      Name: MWAA Private Configuration Product
+      Owner: !Ref ProductOwner
+      ProvisioningArtifactParameters: 
+        - Info: 
+            LoadTemplateFromURL: !Ref MWAACloudFormation
+      SupportEmail: !Ref ProductSupportEmail
+  
+  AssociateMWAAPortfolioWithProduct:
+    Type: "AWS::ServiceCatalog::PortfolioProductAssociation"
+    Properties:
+      PortfolioId: !Ref MWAAPortfolio
+      ProductId: !Ref MWAAProduct
+  
+  AddGroupToPortfolio:
+    Type: AWS::ServiceCatalog::PortfolioPrincipalAssociation
+    Properties: 
+      PortfolioId: !Ref MWAAPortfolio
+      PrincipalARN: !GetAtt 'PortfolioGroup.Arn'
+      PrincipalType: IAM
+      
+
+##################################
+# IAM
+##################################
+  PortfolioGroup:
+    Type: AWS::IAM::Group
+    Properties: 
+      GroupName: !Join ["-", [!Ref AWS::Region, !Ref MWAAGroupName]]
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AWSServiceCatalogEndUserFullAccess
+        - arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess
+
+  RootRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - servicecatalog.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      Path: /
+      Policies:
+        - PolicyName: root
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: 
+                  - "ec2:AuthorizeSecurityGroupIngress"
+                  - "ec2:DeleteSubnet"
+                  - "ec2:DeleteVpcEndpoints"
+                  - "ec2:DeleteRouteTable"
+                  - "ec2:AssociateRouteTable"
+                  - "ec2:DescribeAccountAttributes"
+                  - "ec2:DescribeRouteTables"
+                  - "ec2:CreateTags"
+                  - "ec2:DeleteNetworkInterface"
+                  - "ec2:CreateRouteTable"
+                  - "ec2:DisassociateRouteTable"
+                  - "ec2:RevokeSecurityGroupIngress"
+                  - "ec2:CreateNetworkInterface"
+                  - "ec2:DescribeVpcEndpoints"
+                  - "ec2:DeleteVpc"
+                  - "ec2:CreateSubnet"
+                  - "ec2:DescribeSubnets"
+                  - "ec2:CreateVpc"
+                  - "ec2:DescribeAvailabilityZones"
+                  - "ec2:CreateSecurityGroup"
+                  - "ec2:ModifyVpcAttribute"
+                  - "ec2:DetachNetworkInterface"
+                  - "ec2:DescribeSecurityGroups"
+                  - "ec2:CreateVpcEndpoint"
+                  - "ec2:DescribeVpcs"
+                  - "ec2:DeleteSecurityGroup"
+                  - "ec2:AttachNetworkInterface"
+                  - "airflow:DeleteEnvironment"
+                  - "airflow:GetEnvironment"
+                  - "airflow:CreateEnvironment"
+                  - "iam:CreateRole"
+                  - "iam:AttachRolePolicy"
+                  - "iam:DetachRolePolicy"
+                  - "iam:ListAttachedRolePolicies"
+                  - "iam:GetRole"
+                  - "iam:GetPolicy"
+                  - "iam:DeleteRole"
+                  - "iam:GetRolePolicy"
+                  - "iam:DeletePolicy"
+                  - "iam:DeleteRolePolicy"
+                  - "iam:CreatePolicy"
+                  - "iam:ListPolicyVersions"
+                  - "cloudformation:DescribeStackEvents"
+                  - "cloudformation:UpdateStack"
+                  - "cloudformation:DescribeStacks"
+                  - "cloudformation:DeleteStack"
+                  - "cloudformation:ValidateTemplate"
+                  - "cloudformation:SetStackPolicy"
+                  - "cloudformation:GetTemplateSummary"
+                  - "cloudformation:CreateStack"
+                  - "s3:GetObject"
+                  - "s3:GetEncryptionConfiguration"
+                  - "cloudwatch:PutDashboard"
+                  - "cloudwatch:PutMetricData"
+                  - "cloudwatch:DeleteAlarms"
+                  - "cloudwatch:DeleteInsightRules"
+                  - "cloudwatch:StartMetricStreams"
+                  - "cloudwatch:DescribeAlarmsForMetric"
+                  - "cloudwatch:ListDashboards"
+                  - "cloudwatch:ListTagsForResource"
+                  - "cloudwatch:PutAnomalyDetector"
+                  - "cloudwatch:PutManagedInsightRules"
+                  - "cloudwatch:DescribeInsightRules"
+                  - "cloudwatch:GetDashboard"
+                  - "cloudwatch:GetInsightRuleReport"
+                  - "cloudwatch:DisableInsightRules"
+                  - "cloudwatch:GetMetricStatistics"
+                  - "cloudwatch:DescribeAlarms"
+                  - "cloudwatch:GetMetricStream"
+                  - "cloudwatch:GetMetricData"
+                  - "cloudwatch:ListMetrics"
+                  - "cloudwatch:DeleteAnomalyDetector"
+                  - "cloudwatch:DescribeAnomalyDetectors"
+                  - "cloudwatch:DeleteDashboards"
+                  - "cloudwatch:DescribeAlarmHistory"
+                  - "cloudwatch:StopMetricStreams"
+                  - "cloudwatch:DisableAlarmActions"
+                  - "cloudwatch:DeleteMetricStream"
+                  - "cloudwatch:SetAlarmState"
+                  - "cloudwatch:GetMetricWidgetImage"
+                  - "cloudwatch:EnableInsightRules"
+                  - "cloudwatch:Link"
+                  - "cloudwatch:PutCompositeAlarm"
+                  - "cloudwatch:ListManagedInsightRules"
+                  - "cloudwatch:PutMetricStream"
+                  - "cloudwatch:PutInsightRule"
+                  - "cloudwatch:PutMetricAlarm"
+                  - "cloudwatch:EnableAlarmActions"
+                  - "cloudwatch:ListMetricStreams"
+                  - "kms:DescribeKey"
+                  - "kms:CreateGrant"
+                  - "route53:AssociateVPCWithHostedZone"
+                  - "ssm:PutParameter"
+                  - "ssm:DeleteParameter"
+                Resource: '*'
+  RootInstanceProfile:
+    Type: 'AWS::IAM::InstanceProfile'
+    Properties:
+      Path: /
+      Roles:
+        - !Ref RootRole

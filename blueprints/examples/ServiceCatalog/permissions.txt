@@ -1,0 +1,121 @@
+"ec2:AuthorizeSecurityGroupIngress",
+                "ec2:DeleteSubnet",
+
+                "cloudwatch:PutDashboard",
+                "cloudwatch:PutMetricData",
+                "cloudwatch:DeleteAlarms",
+                "cloudwatch:DeleteInsightRules",
+                "cloudwatch:StartMetricStreams",
+                "cloudwatch:DescribeAlarmsForMetric",
+                "cloudwatch:ListDashboards",
+                "cloudwatch:ListTagsForResource",
+                "cloudwatch:PutAnomalyDetector",
+                "cloudwatch:PutManagedInsightRules",
+                "cloudwatch:DescribeInsightRules",
+                "cloudwatch:GetDashboard",
+                "cloudwatch:GetInsightRuleReport",
+                "cloudwatch:DisableInsightRules",
+                "cloudwatch:GetMetricStatistics",
+                "cloudwatch:DescribeAlarms",
+                "cloudwatch:GetMetricStream",
+                "cloudwatch:GetMetricData",
+                "cloudwatch:ListMetrics",
+                "cloudwatch:DeleteAnomalyDetector",
+                "cloudwatch:DescribeAnomalyDetectors",
+                "cloudwatch:DeleteDashboards",
+                "cloudwatch:DescribeAlarmHistory",
+                "cloudwatch:StopMetricStreams",
+                "cloudwatch:DisableAlarmActions",
+                "cloudwatch:DeleteMetricStream",
+                "cloudwatch:SetAlarmState",
+                "cloudwatch:GetMetricWidgetImage",
+                "cloudwatch:EnableInsightRules",
+                "cloudwatch:Link",
+                "cloudwatch:PutCompositeAlarm",
+                "cloudwatch:ListManagedInsightRules",
+                "cloudwatch:PutMetricStream",
+                "cloudwatch:PutInsightRule",
+                "cloudwatch:PutMetricAlarm",
+                "cloudwatch:EnableAlarmActions",
+                "cloudwatch:ListMetricStreams",
+
+
+
+                "ec2:DeleteVpcEndpoints",
+                "airflow:DeleteEnvironment",
+                "iam:CreateRole",
+
+                
+
+                "iam:AttachRolePolicy",
+
+                
+
+                "ec2:DeleteRouteTable",
+                "ec2:AssociateRouteTable",
+                "ssm:DeleteParameter",
+                "iam:DetachRolePolicy",
+                "cloudformation:DescribeStackEvents",
+                "iam:ListAttachedRolePolicies",
+                
+                "ec2:DescribeAccountAttributes",
+                "cloudformation:UpdateStack",
+                
+                "ec2:DescribeRouteTables",
+                
+                "iam:GetRole",
+                
+                "iam:GetPolicy",
+                
+                "ec2:CreateTags",
+                "ec2:DeleteNetworkInterface",
+                "ec2:CreateRouteTable",
+                "iam:DeleteRole",
+                
+                "ec2:DisassociateRouteTable",
+                
+                "airflow:GetEnvironment",
+                "cloudformation:DescribeStacks",
+                "ec2:RevokeSecurityGroupIngress",
+                "ec2:CreateNetworkInterface",
+                "ssm:PutParameter",
+                "s3:GetObject",
+                "cloudformation:DeleteStack",
+                
+                "ec2:DescribeVpcEndpoints",
+                "ec2:DeleteVpc",
+                "ec2:CreateSubnet",
+                "ec2:DescribeSubnets",
+                "iam:GetRolePolicy",
+                "cloudformation:ValidateTemplate",
+                
+                "ec2:CreateVpc",
+                "iam:DeletePolicy",
+                
+                "s3:GetEncryptionConfiguration",
+                
+                "airflow:CreateEnvironment",
+                
+                "ec2:DescribeAvailabilityZones",
+                
+                "ec2:CreateSecurityGroup",
+                "iam:DeleteRolePolicy",
+                "kms:DescribeKey",
+                "ec2:ModifyVpcAttribute",
+                
+                "kms:CreateGrant",
+                "cloudformation:SetStackPolicy",
+                "ec2:DetachNetworkInterface",
+                
+                "ec2:DescribeSecurityGroups",
+                "cloudformation:GetTemplateSummary",
+                "iam:CreatePolicy",
+                
+                "iam:ListPolicyVersions",
+                
+                "cloudformation:CreateStack",
+                "ec2:CreateVpcEndpoint",
+                "ec2:DescribeVpcs",
+                "ec2:DeleteSecurityGroup",
+                "ec2:AttachNetworkInterface",
+                "route53:AssociateVPCWithHostedZone"
